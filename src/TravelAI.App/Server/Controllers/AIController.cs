@@ -6,6 +6,7 @@ namespace TravelAI.App.Server.Controllers
     [Route("[controller]")]
     public class AIController : ControllerBase
     {
+        [HttpPost]
         async Task<bool> GenerateReport()
         {
             return false;
