@@ -1,6 +1,6 @@
 ﻿namespace TravelAI.App.Shared
 {
-    public class AIReportModel
+    public class ReportModel
     {
         public bool? IsHot { get; set; }
         public bool? IsWarm { get; set; }
