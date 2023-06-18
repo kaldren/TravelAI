@@ -5,6 +5,6 @@ namespace TravelAI.App.Server.Services
     public interface IReportService
     {
         // return URL to generated report
-        string GenerateReport(ReportModel model);
+        Task<string> GenerateReport(ReportModel model);
     }
 }

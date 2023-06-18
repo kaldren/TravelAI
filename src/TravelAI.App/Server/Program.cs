@@ -1,4 +1,5 @@
-using Microsoft.AspNetCore.ResponseCompression;
+using OpenAI.Extensions;
+using TravelAI.App.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddOpenAIService();
+
+builder.Services.AddTransient<IAIService, AIService>();
+builder.Services.AddTransient<IReportService, ReportService>();
 
 var app = builder.Build();
 
