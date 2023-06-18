@@ -16,7 +16,6 @@
         public bool? IsNorthAmerica { get; set; }
         public bool? IsSouthAmerica { get; set; }
         public bool? IsOceania { get; set; }
-        public bool? IsAntarctica { get; set; }
 
         // Seasons
         public bool? IsSpring { get; set; }
@@ -41,19 +40,11 @@
         public bool? IsReligious { get; set; }
         public bool? IsCultural { get; set; }
         public bool? IsAdventure { get; set; }
-        public bool? IsSpa { get; set; }
         public bool? IsSafari { get; set; }
         public bool? IsGambling { get; set; }
         public bool? IsShopping { get; set; }
         public bool? IsFood { get; set; }
         public bool? IsNightlife { get; set; }
-        public bool? IsCruise { get; set; }
-        public bool? IsRoadTrip { get; set; }
-        public bool? IsCycling { get; set; }
-        public bool? IsMotorcycle { get; set; }
-        public bool? IsTrain { get; set; }
-        public bool? IsBoat { get; set; }
-        public bool? IsPlane { get; set; }
 
         public bool? IsSurfing { get; set; }
         public bool? IsDiving { get; set; }

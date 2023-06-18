@@ -1,4 +1,26 @@
 ﻿.AIReportForm {
     display: flex;
     justify-content: center;
+    margin: 0 auto;
+    align-items: center;
+    height: 100vh;
+}
+
+.AIReportForm button {
+    margin: 0.3rem;
+    border-radius: 10rem;
+    display: flex;
+    justify-content: center;
+    align-content:center;
+    align-items: center;
+}
+
+.AIReportForm button span {
+    padding: 0 0.5rem;
+}
+.AIReportForm_inner {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 1000px;
 }
