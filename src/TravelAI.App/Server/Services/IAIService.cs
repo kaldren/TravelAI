@@ -1,7 +1,9 @@
-﻿namespace TravelAI.App.Server.Services
+﻿using TravelAI.App.Shared;
+
+namespace TravelAI.App.Server.Services
 {
     public interface IAIService
     {
-        Task<string> AskChatGPT(string text);
+        Task<ICollection<GPTResponse>> AskChatGPT(ReportRequest model);
     }
 }

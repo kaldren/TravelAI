@@ -1,6 +1,7 @@
 ﻿using OpenAI.Interfaces;
 using OpenAI.ObjectModels;
 using OpenAI.ObjectModels.RequestModels;
+using TravelAI.App.Shared;
 
 namespace TravelAI.App.Server.Services
 {
@@ -13,7 +14,7 @@ namespace TravelAI.App.Server.Services
             _openAiService = openAiService;
         }
 
-        public async Task<string> AskChatGPT(string text)
+        public async Task<ICollection<GPTResponse>> AskChatGPT(ReportRequest request)
         {
             var completionResult = await _openAiService.ChatCompletion.CreateCompletion(new ChatCompletionCreateRequest
             {

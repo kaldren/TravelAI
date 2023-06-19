@@ -11,9 +11,9 @@ namespace TravelAI.App.Server.Services
             _aiService = aiService;
         }
 
-        public async Task<string> GenerateReport(ReportModel model)
+        public async Task<string> GenerateReport(ReportRequest model)
         {
-            var response = await _aiService.AskChatGPT(string.Empty);
+            var response = await _aiService.AskChatGPT(model);
             throw new NotImplementedException();
         }
     }
