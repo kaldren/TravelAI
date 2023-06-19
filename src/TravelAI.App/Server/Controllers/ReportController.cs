@@ -18,7 +18,7 @@ namespace TravelAI.App.Server.Controllers
         [HttpGet]
         public async Task<string> Get()
         {
-            await _reportService.GenerateReport(null);
+            await _reportService.GenerateReport(new ReportRequest());
 
             return string.Empty;
         }
