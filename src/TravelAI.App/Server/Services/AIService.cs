@@ -17,11 +17,14 @@ namespace TravelAI.App.Server.Services
 
         public async Task<ICollection<GPTResponse>> AskChatGPT(ReportRequest request)
         {
-            request.IsCultural = true;
-            request.IsSummer = true;
-            request.IsSafari = true;
+            request.IsExpensiveCostOfLiving = true;
+            request.IsAugust = true;
+            request.IsBeach = true;
+            request.IsSouthAmerica = true;
 
             var placesBuilder = GeneratePlacesToTravelQuestion(request);
+            string placesResult = null;
+            string topThingsToDo = null;
 
             var completionResult = await _openAiService.ChatCompletion.CreateCompletion(new ChatCompletionCreateRequest
             {
@@ -33,7 +36,25 @@ namespace TravelAI.App.Server.Services
             });
             if (completionResult.Successful)
             {
-                var result = completionResult.Choices.First().Message.Content;
+                placesResult = completionResult.Choices.First().Message.Content;
+            }
+
+            if (placesResult is not null)
+            {
+                var places = placesResult.Split(".");
+
+                completionResult = await _openAiService.ChatCompletion.CreateCompletion(new ChatCompletionCreateRequest
+                {
+                    Messages = new List<ChatMessage>
+                    {
+                        ChatMessage.FromUser($"Tell me most interesting things I can do at each of these places {string.Join(", ", places.Skip(1))}"),
+                    },
+                    Model = Models.ChatGpt3_5Turbo,
+                });
+                if (completionResult.Successful)
+                {
+                    topThingsToDo = completionResult.Choices.First().Message.Content;
+                }
             }
 
             throw new NotImplementedException();
@@ -41,7 +62,7 @@ namespace TravelAI.App.Server.Services
 
         private StringBuilder GeneratePlacesToTravelQuestion(ReportRequest request)
         {
-            StringBuilder questionBuilder = new StringBuilder("Suggest me 10 places to travel to.");
+            StringBuilder questionBuilder = new StringBuilder("Suggest me 10 places inside countries to travel to, without anything else, just their names ordered numerically.");
 
             if (request.IsHot.HasValue)
             {
@@ -258,5 +279,7 @@ namespace TravelAI.App.Server.Services
 
             return questionBuilder;
         }
+
+        //private StringBuilder TopThingsToDo()
     }
 }
