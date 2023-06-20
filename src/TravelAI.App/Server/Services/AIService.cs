@@ -15,49 +15,69 @@ namespace TravelAI.App.Server.Services
             _openAiService = openAiService;
         }
 
-        public async Task<ICollection<GPTResponse>> AskChatGPT(ReportRequest request)
+        public async Task<string> AskChatGPT(string message)
         {
-            request.IsExpensiveCostOfLiving = true;
-            request.IsAugust = true;
-            request.IsBeach = true;
-            request.IsSouthAmerica = true;
+            return await SendChatMessageAsync(message);
 
-            var placesBuilder = GeneratePlacesToTravelQuestion(request);
-            string placesResult = null;
-            string topThingsToDo = null;
+            //request.IsExpensiveCostOfLiving = true;
+            //request.IsAugust = true;
+            //request.IsBeach = true;
+            //request.IsSouthAmerica = true;
 
+            //var placesBuilder = GeneratePlacesToTravelQuestion(request);
+            //string placesResult = null;
+            //string topThingsToDo = null;
+
+            //var completionResult = await _openAiService.ChatCompletion.CreateCompletion(new ChatCompletionCreateRequest
+            //{
+            //    Messages = new List<ChatMessage>
+            //    {
+            //        ChatMessage.FromUser(placesBuilder.ToString()),
+            //    },
+            //    Model = Models.ChatGpt3_5Turbo,
+            //});
+            //if (completionResult.Successful)
+            //{
+            //    placesResult = completionResult.Choices.First().Message.Content;
+            //}
+
+            //if (placesResult is not null)
+            //{
+            //    var places = placesResult.Split(".");
+
+            //    completionResult = await _openAiService.ChatCompletion.CreateCompletion(new ChatCompletionCreateRequest
+            //    {
+            //        Messages = new List<ChatMessage>
+            //        {
+            //            ChatMessage.FromUser($"Tell me most interesting things I can do at each of these places {string.Join(", ", places.Skip(1))}"),
+            //        },
+            //        Model = Models.ChatGpt3_5Turbo,
+            //    });
+            //    if (completionResult.Successful)
+            //    {
+            //        topThingsToDo = completionResult.Choices.First().Message.Content;
+            //    }
+            //}
+
+            //throw new NotImplementedException();
+        }
+
+        private async Task<string> SendChatMessageAsync(string message)
+        {
             var completionResult = await _openAiService.ChatCompletion.CreateCompletion(new ChatCompletionCreateRequest
             {
                 Messages = new List<ChatMessage>
                 {
-                    ChatMessage.FromUser(placesBuilder.ToString()),
+                    ChatMessage.FromUser(message),
                 },
                 Model = Models.ChatGpt3_5Turbo,
             });
             if (completionResult.Successful)
             {
-                placesResult = completionResult.Choices.First().Message.Content;
+                return completionResult.Choices.First().Message.Content;
             }
 
-            if (placesResult is not null)
-            {
-                var places = placesResult.Split(".");
-
-                completionResult = await _openAiService.ChatCompletion.CreateCompletion(new ChatCompletionCreateRequest
-                {
-                    Messages = new List<ChatMessage>
-                    {
-                        ChatMessage.FromUser($"Tell me most interesting things I can do at each of these places {string.Join(", ", places.Skip(1))}"),
-                    },
-                    Model = Models.ChatGpt3_5Turbo,
-                });
-                if (completionResult.Successful)
-                {
-                    topThingsToDo = completionResult.Choices.First().Message.Content;
-                }
-            }
-
-            throw new NotImplementedException();
+            return null;
         }
 
         private StringBuilder GeneratePlacesToTravelQuestion(ReportRequest request)
@@ -279,7 +299,5 @@ namespace TravelAI.App.Server.Services
 
             return questionBuilder;
         }
-
-        //private StringBuilder TopThingsToDo()
     }
 }
