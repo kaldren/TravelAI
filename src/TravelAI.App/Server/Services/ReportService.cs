@@ -34,7 +34,6 @@ namespace TravelAI.App.Server.Services
             catch (Exception)
             {
                 return url;
-                throw;
             }
 
             // Generate URL of the report
