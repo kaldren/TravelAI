@@ -2,6 +2,6 @@
 {
     public interface IAIService
     {
-        Task<string> AskChatGPT(string message);
+        Task<string> SendChatMessage(string message);
     }
 }

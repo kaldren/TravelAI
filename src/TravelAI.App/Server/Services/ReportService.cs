@@ -20,13 +20,13 @@ namespace TravelAI.App.Server.Services
             {
                 // Q1 - Places to travel
                 StringBuilder placesToTravel = GeneratePlacesToTravelQuestion(model);
-                string placesToTravelResponse = await _aiService.AskChatGPT(placesToTravel.ToString());
+                string placesToTravelResponse = await _aiService.SendChatMessage(placesToTravel.ToString());
 
                 if (string.IsNullOrEmpty(placesToTravelResponse))
                     return url;
 
                 // Q2
-                string thingsToDo = await _aiService.AskChatGPT($"Tell me most interesting things I can do at each of these places {string.Join(", ", placesToTravelResponse.Split(".").Skip(1))}");
+                string thingsToDo = await _aiService.SendChatMessage($"Tell me most interesting things I can do at each of these places {string.Join(", ", placesToTravelResponse.Split(".").Skip(1))}");
 
                 if (string.IsNullOrEmpty(placesToTravelResponse))
                     return url;
