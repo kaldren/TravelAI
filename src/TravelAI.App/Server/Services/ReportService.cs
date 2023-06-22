@@ -25,11 +25,13 @@ namespace TravelAI.App.Server.Services
                 if (string.IsNullOrEmpty(placesToTravelResponse))
                     return url;
 
-                // Q2
+                // Q2 - Interesting things to do
                 string thingsToDo = await _aiService.SendChatMessage($"Tell me most interesting things I can do at each of these places {string.Join(", ", placesToTravelResponse.Split(".").Skip(1))}");
 
                 if (string.IsNullOrEmpty(placesToTravelResponse))
                     return url;
+
+                // Insert into database
             }
             catch (Exception)
             {
