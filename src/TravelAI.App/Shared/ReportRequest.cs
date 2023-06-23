@@ -6,8 +6,8 @@
         public bool? IsWarm { get; set; }
         public bool? IsCold { get; set; }
         public bool? IsSafe { get; set; }
-        public bool? HasFastInternet { get; set; }
-        public bool? IsTopDestination { get; set; }
+        public bool? IsInternet { get; set; }
+        public bool? IsTop { get; set; }
 
         // Continents
         public bool? IsAfrica { get; set; }
@@ -43,7 +43,7 @@
         public bool? IsSafari { get; set; }
         public bool? IsGambling { get; set; }
         public bool? IsShopping { get; set; }
-        public bool? IsFood { get; set; }
+        public bool? IsTastyFood { get; set; }
         public bool? IsNightlife { get; set; }
 
         public bool? IsSurfing { get; set; }
@@ -52,9 +52,9 @@
         public bool? IsHiking { get; set; }
         public bool? IsCamping { get; set; }
 
-        public bool? IsCheapCostOfLiving { get; set; }
-        public bool? IsAverageCostOfLiving { get; set; }
-        public bool? IsExpensiveCostOfLiving { get; set; }
+        public bool? IsCheap { get; set; }
+        public bool? IsModerate { get; set; }
+        public bool? IsExpensive { get; set; }
 
         // Months
         public bool? IsJanuary { get; set; }

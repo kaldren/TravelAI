@@ -1,4 +1,5 @@
-﻿<div class="AIReportForm">
+﻿@using TravelAI.App.Shared;
+<div class="AIReportForm">
     <div class="AIReportForm_btns">
         <button type="button" class="btn btn-primary" @onclick=ToggleHot><img src="icons/icons8-summer.svg" /><span>HOT</span></button>
         <button type="button" class="btn btn-primary" @onclick=ToggleWarm><img src="icons/icons8-partly-cloudy-day.svg" /><span>WARM</span></button>
@@ -58,7 +59,7 @@
     <div class="AIReportForm_input">
         <textarea class="form-control" rows="3" placeholder="Describe the place you are looking to travel to (optional)"></textarea>
     </div>
-    <div class="AIReportForm_submit">
+    <div class="AIReportForm_submit" @onclick="SubmitForm">
         <button type="button" class="btn btn-primary"><img src="icons/icons8-robot.svg" /><span>ASK OUR AI ROBOT DZIFFY</span></button>
     </div>
 </div>
@@ -99,16 +100,16 @@
 
     private bool isSpring = false;
     void ToggleSpring() => isSpring = !isSpring;    
-    
+
     private bool isSummer = false;
     void ToggleSummer() => isSummer = !isSummer;    
-    
+
     private bool isAutumn = false;
     void ToggleAutumn() => isAutumn = !isAutumn;
-    
+
     private bool isWinter = false;
     void ToggleWinter() => isWinter = !isWinter;    
-    
+
     private bool isCity = false;
     void ToggleCity() => isCity = !isCity;
 
@@ -126,16 +127,16 @@
 
     private bool isForest = false;
     void ToggleForest() => isForest = !isForest;    
-    
+
     private bool isDesert = false;
     void ToggleDesert() => isDesert = !isDesert;
-    
+
     private bool isLake = false;
     void ToggleLake() => isLake = !isLake;    
 
     private bool isRiver = false;
     void ToggleRiver() => isRiver = !isRiver;
-    
+
     private bool isIsland = false;
     void ToggleIsland() => isIsland = !isIsland;   
 
@@ -147,84 +148,145 @@
 
     private bool isCultural = false;
     void ToggleCultural() => isCultural = !isCultural;
-    
+
     private bool isAdventure = false;
     void ToggleAdventure() => isAdventure = !isAdventure;
-        
+
     private bool isSafari = false;
     void ToggleSafari() => isSafari = !isSafari;
-            
+
     private bool isGambling = false;
     void ToggleGambling() => isGambling = !isGambling;
-                
+
     private bool isShopping = false;
     void ToggleShopping() => isShopping = !isShopping;
-                    
+
     private bool isTastyFood = false;
     void ToggleTastyFood() => isTastyFood = !isTastyFood;
-                        
+
     private bool isNightlife = false;
     void ToggleNightlife() => isNightlife = !isNightlife;
-                            
+
     private bool isSurfing = false;
     void ToggleSurfing() => isSurfing = !isSurfing;
-                                
+
     private bool isDiving = false;
     void ToggleDiving() => isDiving = !isDiving;
-                                    
+
     private bool isSkiing = false;
     void ToggleSkiing() => isSkiing = !isSkiing;
-                                        
+
     private bool isHiking = false;
     void ToggleHiking() => isHiking = !isHiking;
-                                            
+
     private bool isCamping = false;
     void ToggleCamping() => isCamping = !isCamping;
-                                                
+
     private bool isCheap = false;
     void ToggleCheap() => isCheap = !isCheap;
-                                                    
+
     private bool isModerate = false;
     void ToggleModerate() => isModerate = !isModerate;
-                                                        
+
     private bool isExpensive = false;
     void ToggleExpensive() => isExpensive = !isExpensive;
-                                                            
+
     private bool isJanuary = false;
     void ToggleJanuary() => isJanuary = !isJanuary;
-                                                                
+
     private bool isFebruary = false;
     void ToggleFebruary() => isFebruary = !isFebruary;
-                                                                    
+
     private bool isMarch = false;
     void ToggleMarch() => isMarch = !isMarch;
-                                                                        
+
     private bool isApril = false;
     void ToggleApril() => isApril = !isApril;
-                                                                            
+
     private bool isMay = false;
     void ToggleMay() => isMay = !isMay;
-                                                                                
+
     private bool isJune = false;
     void ToggleJune() => isJune = !isJune;
-                                                                                    
+
     private bool isJuly = false;
     void ToggleJuly() => isJuly = !isJuly;
-                                                                                        
+
     private bool isAugust = false;
     void ToggleAugust() => isAugust = !isAugust;
-                                                                                            
+
     private bool isSeptember = false;
     void ToggleSeptember() => isSeptember = !isSeptember;
-                                                                                                
+
     private bool isOctober = false;
     void ToggleOctober() => isOctober = !isOctober;
-                                                                                                    
+
     private bool isNovember = false;
     void ToggleNovember() => isNovember = !isNovember;
-                                                                                                        
+
     private bool isDecember = false;
     void ToggleDecember() => isDecember = !isDecember;
+
+    void SubmitForm()
+    {
+        var request = new ReportRequest
+        {
+            IsHot = isHot,
+            IsWarm = isWarm,
+            IsCold = isCold,
+            IsSafe = isSafe,
+            IsInternet = isInternet,
+            IsTop = isTop,
+            IsAfrica = isAfrica,
+            IsAsia = isAsia,
+            IsEurope = isEurope,
+            IsNorthAmerica = isNorthAmerica,
+            IsSouthAmerica = isSouthAmerica,
+            IsSpring = isSpring,
+            IsSummer = isSummer,
+            IsAutumn = isAutumn,
+            IsWinter = isWinter,
+            IsCity = isCity,
+            IsTown = isTown,
+            IsVillage = isVillage,
+            IsBeach = isBeach,
+            IsMountain = isMountain,
+            IsForest = isForest,
+            IsDesert = isDesert,
+            IsLake = isLake,
+            IsRiver = isRiver,
+            IsIsland = isIsland,
+            IsHistorical = isHistorical,
+            IsReligious = isReligious,
+            IsCultural = isCultural,
+            IsAdventure = isAdventure,
+            IsSafari = isSafari,
+            IsGambling = isGambling,
+            IsShopping = isShopping,
+            IsTastyFood = isTastyFood,
+            IsNightlife = isNightlife,
+            IsSurfing = isSurfing,
+            IsDiving = isDiving,
+            IsSkiing = isSkiing,
+            IsHiking = isHiking,
+            IsCamping = isCamping,
+            IsCheap = isCheap,
+            IsModerate = isModerate,
+            IsExpensive = isExpensive,
+            IsJanuary = isJanuary,
+            IsFebruary = isFebruary,
+            IsMarch = isMarch,
+            IsApril = isApril,
+            IsMay = isMay,
+            IsJune = isJune,
+            IsJuly = isJuly,
+            IsAugust = isAugust,
+            IsSeptember = isSeptember,
+            IsOctober = isOctober,
+            IsNovember = isNovember,
+            IsDecember = isDecember
+        };
+    }
 
     protected override async Task OnInitializedAsync()
     {
