@@ -1,4 +1,6 @@
 ﻿@using TravelAI.App.Shared;
+@inject HttpClient Http
+
 <div class="AIReportForm">
     <div class="AIReportForm_btns">
         <button type="button" class="btn btn-primary" @onclick=ToggleHot><img src="icons/icons8-summer.svg" /><span>HOT</span></button>
@@ -227,7 +229,7 @@
     private bool isDecember = false;
     void ToggleDecember() => isDecember = !isDecember;
 
-    void SubmitForm()
+    async Task SubmitForm()
     {
         var request = new ReportRequest
         {
@@ -286,10 +288,11 @@
             IsNovember = isNovember,
             IsDecember = isDecember
         };
+
+        var res = await Http.PostAsJsonAsync<ReportRequest>("Report", request);
     }
 
     protected override async Task OnInitializedAsync()
     {
-        //forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
     }
 }

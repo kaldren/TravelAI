@@ -63,11 +63,11 @@ namespace TravelAI.App.Server.Services
             {
                 questionBuilder.Append($" It should be safe.");
             }
-            if (request.HasFastInternet.HasValue)
+            if (request.IsInternet.HasValue)
             {
                 questionBuilder.Append($" It should have fast internet.");
             }
-            if (request.IsTopDestination.HasValue)
+            if (request.IsTop.HasValue)
             {
                 questionBuilder.Append($" It should be a preferred destination.");
             }
@@ -171,7 +171,7 @@ namespace TravelAI.App.Server.Services
             {
                 questionBuilder.Append($" It should be good for shopping.");
             }
-            if (request.IsFood.HasValue)
+            if (request.IsTastyFood.HasValue)
             {
                 questionBuilder.Append($" It should have good food.");
             }
@@ -199,15 +199,15 @@ namespace TravelAI.App.Server.Services
             {
                 questionBuilder.Append($" It should be good for camping.");
             }
-            if (request.IsCheapCostOfLiving.HasValue)
+            if (request.IsCheap.HasValue)
             {
                 questionBuilder.Append($" It should be cheap in terms of cost of living.");
             }
-            if (request.IsAverageCostOfLiving.HasValue)
+            if (request.IsModerate.HasValue)
             {
                 questionBuilder.Append($" It should be moderate in terms of cost of living.");
             }
-            if (request.IsExpensiveCostOfLiving.HasValue)
+            if (request.IsExpensive.HasValue)
             {
                 questionBuilder.Append($" It should be expensive in terms of cost of living.");
             }
