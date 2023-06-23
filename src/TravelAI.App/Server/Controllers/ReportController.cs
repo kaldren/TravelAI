@@ -26,6 +26,7 @@ namespace TravelAI.App.Server.Controllers
         [HttpPost]
         public async Task<bool> Post(ReportRequest model)
         {
+            var result = await _reportService.GenerateReport(model);
             return false;
         }
     }
