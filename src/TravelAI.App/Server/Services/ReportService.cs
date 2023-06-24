@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Azure.Data.Tables;
+using System.Text;
 using TravelAI.App.Shared;
 
 namespace TravelAI.App.Server.Services
@@ -32,6 +33,25 @@ namespace TravelAI.App.Server.Services
                     return url;
 
                 // Insert into database
+                TableServiceClient tableServiceClient = new TableServiceClient("DefaultEndpointsProtocol=https;AccountName=travelaicosmos;AccountKey=a67ihiAaTgPMdnxE3iNmaYMfzNttMyjGuQfg4m2ca2gTMTY2PEffVynMRrgBNMLvRw1ifzOJYfCyACDbZzIqnw==;TableEndpoint=https://travelaicosmos.table.cosmos.azure.com:443/;");
+                // New instance of TableClient class referencing the server-side table
+                TableClient tableClient = tableServiceClient.GetTableClient(
+                    tableName: "reports"
+                );
+
+                await tableClient.CreateIfNotExistsAsync();
+
+                // Create new item using composite key constructor
+                var prod1 = new ReportTableModel()
+                {
+                    RowKey = "68719518388",
+                    PartitionKey = "gear-surf-surfboards",
+                    Places = placesToTravelResponse.Split(".").Skip(1).ToArray(),
+                    ThingsToDo = thingsToDo.Split(".").Skip(1).ToArray(),
+                };
+
+                // Add new item to server-side table
+                var response = await tableClient.AddEntityAsync<ReportTableModel>(prod1);
             }
             catch (Exception)
             {
