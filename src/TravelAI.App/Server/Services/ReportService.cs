@@ -76,7 +76,7 @@ namespace TravelAI.App.Server.Services
 
         private StringBuilder GeneratePlacesToTravelQuestion(ReportRequest request)
         {
-            StringBuilder questionBuilder = new StringBuilder("Suggest me 10 places to visit in the world. Return everything as JSON under places array. Have only these entries inside it: location, country, climate, averageTemp, costOfLiving, averageMonthlyCostInUSD, thingsToDo, famousSites, bestMonthsToVisit. Don't add other fields.");
+            StringBuilder questionBuilder = new StringBuilder("Suggest me 10 places to visit in the world and return everything as JSON under 'places' array. Have only these entries inside it: location, country, climate, averageTempCelseus, costOfLiving, averageMonthlyCostInUSD, thingsToDo, mostFamousSites, mostFamousSitesDescription, bestMonthsToVisit. Don't add other fields.");
 
             if (request.IsHot == true)
             {
