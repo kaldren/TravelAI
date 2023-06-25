@@ -1,5 +1,6 @@
 ﻿using Azure.Data.Tables;
 using System.Text;
+using System.Text.RegularExpressions;
 using TravelAI.App.Shared;
 
 namespace TravelAI.App.Server.Services
@@ -20,10 +21,20 @@ namespace TravelAI.App.Server.Services
             try
             {
                 // Q1 - Places to travel
-                StringBuilder placesToTravel = GeneratePlacesToTravelQuestion(model);
-                string placesToTravelResponse = await _aiService.SendChatMessage(placesToTravel.ToString());
+                StringBuilder placesToTravelBuilder = GeneratePlacesToTravelQuestion(model);
+                string placesToTravelResponse = await _aiService.SendChatMessage(placesToTravelBuilder.ToString());
+                string placesToTravel = null;
 
-                if (string.IsNullOrEmpty(placesToTravelResponse))
+                // Get JSON from placesToTravelResponse
+                var regex = new Regex("{.*}");
+                Match match = regex.Match(placesToTravelResponse);
+
+                if (match.Success)
+                {
+                    placesToTravel = match.Groups[0].Value; // curly braces content
+                }
+
+                if (string.IsNullOrEmpty(placesToTravel))
                     return url;
 
                 // Q2 - Interesting things to do
@@ -65,217 +76,217 @@ namespace TravelAI.App.Server.Services
 
         private StringBuilder GeneratePlacesToTravelQuestion(ReportRequest request)
         {
-            StringBuilder questionBuilder = new StringBuilder("Suggest me 10 places to visit in the world. Return everything as JSON under places array. Have only these entries inside it: name, climate, averageTemp, costOfLiving, thingsToDo, famousPlaces.");
+            StringBuilder questionBuilder = new StringBuilder("Suggest me 10 places to visit in the world. Return everything as JSON under places array. Have only these entries inside it: location, country, climate, averageTemp, costOfLiving, averageMonthlyCostInUSD, thingsToDo, famousSites, bestMonthsToVisit. Don't add other fields.");
 
-            if (request.IsHot.HasValue)
+            if (request.IsHot == true)
             {
                 questionBuilder.Append($" It should be hot.");
             }
-            if (request.IsWarm.HasValue)
+            if (request.IsWarm == true)
             {
                 questionBuilder.Append($" It should be warm.");
             }
-            if (request.IsCold.HasValue)
+            if (request.IsCold == true)
             {
                 questionBuilder.Append($" It should be cold.");
             }
-            if (request.IsSafe.HasValue)
+            if (request.IsSafe == true)
             {
                 questionBuilder.Append($" It should be safe.");
             }
-            if (request.IsInternet.HasValue)
+            if (request.IsInternet == true)
             {
                 questionBuilder.Append($" It should have fast internet.");
             }
-            if (request.IsTop.HasValue)
+            if (request.IsTop == true)
             {
                 questionBuilder.Append($" It should be a preferred destination.");
             }
-            if (request.IsAfrica.HasValue)
+            if (request.IsAfrica == true)
             {
                 questionBuilder.Append($" It should be in Africa.");
             }
-            if (request.IsAsia.HasValue)
+            if (request.IsAsia == true)
             {
                 questionBuilder.Append($" It should be in Asia.");
             }
-            if (request.IsEurope.HasValue)
+            if (request.IsEurope == true)
             {
                 questionBuilder.Append($" It should be in Europe.");
             }
-            if (request.IsNorthAmerica.HasValue)
+            if (request.IsNorthAmerica == true)
             {
                 questionBuilder.Append($" It should be in North America.");
             }
-            if (request.IsSouthAmerica.HasValue)
+            if (request.IsSouthAmerica == true)
             {
                 questionBuilder.Append($" It should be in South America.");
             }
-            if (request.IsSpring.HasValue)
+            if (request.IsSpring == true)
             {
                 questionBuilder.Append($" It should be Spring now.");
             }
-            if (request.IsSummer.HasValue)
+            if (request.IsSummer == true)
             {
                 questionBuilder.Append($" It should be Summer now.");
             }
-            if (request.IsAutumn.HasValue)
+            if (request.IsAutumn == true)
             {
                 questionBuilder.Append($" It should be Autumn now.");
             }
-            if (request.IsWinter.HasValue)
+            if (request.IsWinter == true)
             {
                 questionBuilder.Append($" It should be Winter now.");
             }
-            if (request.IsCity.HasValue)
+            if (request.IsCity == true)
             {
                 questionBuilder.Append($" It should be a city.");
             }
-            if (request.IsTown.HasValue)
+            if (request.IsTown == true)
             {
                 questionBuilder.Append($" It should be a town.");
             }
-            if (request.IsVillage.HasValue)
+            if (request.IsVillage == true)
             {
                 questionBuilder.Append($" It should be a village.");
             }
-            if (request.IsBeach.HasValue)
+            if (request.IsBeach == true)
             {
                 questionBuilder.Append($" It should have beaches.");
             }
-            if (request.IsMountain.HasValue)
+            if (request.IsMountain == true)
             {
                 questionBuilder.Append($" It should be near mountains.");
             }
-            if (request.IsForest.HasValue)
+            if (request.IsForest == true)
             {
                 questionBuilder.Append($" It should be near forest.");
             }
-            if (request.IsDesert.HasValue)
+            if (request.IsDesert == true)
             {
                 questionBuilder.Append($" It should be near desert.");
             }
-            if (request.IsLake.HasValue)
+            if (request.IsLake == true)
             {
                 questionBuilder.Append($" It should be near lake.");
             }
-            if (request.IsRiver.HasValue)
+            if (request.IsRiver == true)
             {
                 questionBuilder.Append($" It should be near river.");
             }
-            if (request.IsIsland.HasValue)
+            if (request.IsIsland == true)
             {
                 questionBuilder.Append($" It should be an island.");
             }
-            if (request.IsHistorical.HasValue)
+            if (request.IsHistorical == true)
             {
                 questionBuilder.Append($" It should be historical.");
             }
-            if (request.IsReligious.HasValue)
+            if (request.IsReligious == true)
             {
                 questionBuilder.Append($" It should be religious.");
             }
-            if (request.IsAdventure.HasValue)
+            if (request.IsAdventure == true)
             {
                 questionBuilder.Append($" It should be good for adventures.");
             }
-            if (request.IsSafari.HasValue)
+            if (request.IsSafari == true)
             {
                 questionBuilder.Append($" It should be good for safari.");
             }
-            if (request.IsGambling.HasValue)
+            if (request.IsGambling == true)
             {
                 questionBuilder.Append($" It should be good for gambling.");
             }
-            if (request.IsShopping.HasValue)
+            if (request.IsShopping == true)
             {
                 questionBuilder.Append($" It should be good for shopping.");
             }
-            if (request.IsTastyFood.HasValue)
+            if (request.IsTastyFood == true)
             {
                 questionBuilder.Append($" It should have good food.");
             }
-            if (request.IsNightlife.HasValue)
+            if (request.IsNightlife == true)
             {
                 questionBuilder.Append($" It should have good nightlife.");
             }
-            if (request.IsSurfing.HasValue)
+            if (request.IsSurfing == true)
             {
                 questionBuilder.Append($" It should be good for surfing.");
             }
-            if (request.IsDiving.HasValue)
+            if (request.IsDiving == true)
             {
                 questionBuilder.Append($" It should be good for diving.");
             }
-            if (request.IsSkiing.HasValue)
+            if (request.IsSkiing == true)
             {
                 questionBuilder.Append($" It should be good for skiing.");
             }
-            if (request.IsHiking.HasValue)
+            if (request.IsHiking == true)
             {
                 questionBuilder.Append($" It should be good for hiking.");
             }
-            if (request.IsCamping.HasValue)
+            if (request.IsCamping == true)
             {
                 questionBuilder.Append($" It should be good for camping.");
             }
-            if (request.IsCheap.HasValue)
+            if (request.IsCheap == true)
             {
                 questionBuilder.Append($" It should be cheap in terms of cost of living.");
             }
-            if (request.IsModerate.HasValue)
+            if (request.IsModerate == true)
             {
                 questionBuilder.Append($" It should be moderate in terms of cost of living.");
             }
-            if (request.IsExpensive.HasValue)
+            if (request.IsExpensive == true)
             {
                 questionBuilder.Append($" It should be expensive in terms of cost of living.");
             }
-            if (request.IsJanuary.HasValue)
+            if (request.IsJanuary == true)
             {
                 questionBuilder.Append($" It should be preferred destination for travelling in January.");
             }
-            if (request.IsFebruary.HasValue)
+            if (request.IsFebruary == true)
             {
                 questionBuilder.Append($" It should be preferred destination for travelling in February.");
             }
-            if (request.IsMarch.HasValue)
+            if (request.IsMarch == true)
             {
                 questionBuilder.Append($" It should be preferred destination for travelling in March.");
             }
-            if (request.IsApril.HasValue)
+            if (request.IsApril == true)
             {
                 questionBuilder.Append($" It should be preferred destination for travelling in April.");
             }
-            if (request.IsMay.HasValue)
+            if (request.IsMay == true)
             {
                 questionBuilder.Append($" It should be preferred destination for travelling in May.");
             }
-            if (request.IsJune.HasValue)
+            if (request.IsJune == true)
             {
                 questionBuilder.Append($" It should be preferred destination for travelling in June.");
             }
-            if (request.IsJuly.HasValue)
+            if (request.IsJuly == true)
             {
                 questionBuilder.Append($" It should be preferred destination for travelling in July.");
             }
-            if (request.IsAugust.HasValue)
+            if (request.IsAugust == true)
             {
                 questionBuilder.Append($" It should be preferred destination for travelling in August.");
             }
-            if (request.IsSeptember.HasValue)
+            if (request.IsSeptember == true)
             {
                 questionBuilder.Append($" It should be preferred destination for travelling in September.");
             }
-            if (request.IsOctober.HasValue)
+            if (request.IsOctober == true)
             {
                 questionBuilder.Append($" It should be preferred destination for travelling in October.");
             }
-            if (request.IsNovember.HasValue)
+            if (request.IsNovember == true)
             {
                 questionBuilder.Append($" It should be preferred destination for travelling in November.");
             }
-            if (request.IsDecember.HasValue)
+            if (request.IsDecember == true)
             {
                 questionBuilder.Append($" It should be preferred destination for travelling in December.");
             }
