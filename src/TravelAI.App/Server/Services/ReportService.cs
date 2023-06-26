@@ -34,8 +34,8 @@ namespace TravelAI.App.Server.Services
                     placesToTravel = match.Groups[0].Value; // curly braces content
                 }
 
-                if (string.IsNullOrEmpty(placesToTravel))
-                    return url;
+                //if (string.IsNullOrEmpty(placesToTravel))
+                //    return url;
 
                 // Q2 - Interesting things to do
                 string thingsToDo = await _aiService.SendChatMessage($"Tell me most interesting things I can do at each of these places {string.Join(", ", placesToTravelResponse.Split(".").Skip(1))}");
@@ -76,7 +76,12 @@ namespace TravelAI.App.Server.Services
 
         private StringBuilder GeneratePlacesToTravelQuestion(ReportRequest request)
         {
-            StringBuilder questionBuilder = new StringBuilder("Suggest me 10 places to visit in the world and return everything as JSON under 'places' array. Have only these entries inside it: location, country, climate, averageTempCelseus, costOfLiving, averageMonthlyCostInUSD, thingsToDo, mostFamousSites, mostFamousSitesDescription, bestMonthsToVisit. Don't add other fields.");
+            StringBuilder questionBuilder = 
+                new StringBuilder
+                ("Suggest me 10 places to visit in the world and return everything as JSON under 'places' array. " +
+                "Have only these entries inside it: location, country, description, climate, averageTempCelseus, costOfLiving, " +
+                "averageMonthlyCostInUSD, bestMonthsToVisit. " +
+                "Don't add other fields.");
 
             if (request.IsHot == true)
             {
