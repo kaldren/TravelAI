@@ -1,5 +1,6 @@
 ﻿using Azure.Data.Tables;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using TravelAI.App.Shared;
 
@@ -20,14 +21,16 @@ namespace TravelAI.App.Server.Services
 
             try
             {
-                // Q1 - Places to travel
-                StringBuilder placesToTravelBuilder = GeneratePlacesToTravelQuestion(model);
-                string placesToTravelResponse = await _aiService.SendChatMessage(placesToTravelBuilder.ToString());
+                // Q1 - Destinations to travel to
+                StringBuilder destinationsBuilder = GeneratePlacesToTravelQuestion(model);
+                string destinationJson = await _aiService.SendChatMessage(destinationsBuilder.ToString());
+
+                var places = JsonSerializer.Deserialize<List<Destination>>(destinationJson);
+
                 string placesToTravel = null;
 
-                // Get JSON from placesToTravelResponse
                 var regex = new Regex("{.*}");
-                Match match = regex.Match(placesToTravelResponse);
+                Match match = regex.Match(destinationJson);
 
                 if (match.Success)
                 {
@@ -38,9 +41,9 @@ namespace TravelAI.App.Server.Services
                 //    return url;
 
                 // Q2 - Interesting things to do
-                string thingsToDo = await _aiService.SendChatMessage($"Tell me most interesting things I can do at each of these places {string.Join(", ", placesToTravelResponse.Split(".").Skip(1))}");
+                string thingsToDo = await _aiService.SendChatMessage($"Tell me most interesting things I can do at each of these places {string.Join(", ", destinationJson.Split(".").Skip(1))}");
 
-                if (string.IsNullOrEmpty(placesToTravelResponse))
+                if (string.IsNullOrEmpty(destinationJson))
                     return url;
 
                 // Insert into database
@@ -57,7 +60,7 @@ namespace TravelAI.App.Server.Services
                 {
                     RowKey = "68719518388",
                     PartitionKey = "gear-surf-surfboards",
-                    Places = placesToTravelResponse.Split(".").Skip(1).ToArray(),
+                    Places = destinationJson.Split(".").Skip(1).ToArray(),
                     ThingsToDo = thingsToDo.Split(".").Skip(1).ToArray(),
                 };
 
@@ -78,9 +81,9 @@ namespace TravelAI.App.Server.Services
         {
             StringBuilder questionBuilder = 
                 new StringBuilder
-                ("Suggest me 10 places to visit in the world and return everything as JSON under 'places' array. " +
-                "Have only these entries inside it: location, country, description, climate, averageTempCelseus, costOfLiving, " +
-                "averageMonthlyCostInUSD, bestMonthsToVisit. " +
+                ("Suggest me 10 places to visit in the world and return everything as JSON under 'destinations' array. " +
+                "Have only these entries inside it: location, country, description, climate, averageTempC, costOfLiving, " +
+                "averageMonthlyCostUSD, bestMonthsToVisit. " +
                 "Don't add other fields.");
 
             if (request.IsHot == true)
