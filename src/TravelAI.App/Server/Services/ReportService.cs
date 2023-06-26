@@ -1,4 +1,5 @@
 ﻿using Azure.Data.Tables;
+using Microsoft.Extensions.Options;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -25,7 +26,15 @@ namespace TravelAI.App.Server.Services
                 StringBuilder destinationsBuilder = GeneratePlacesToTravelQuestion(model);
                 string destinationJson = await _aiService.SendChatMessage(destinationsBuilder.ToString());
 
-                var places = JsonSerializer.Deserialize<List<Destination>>(destinationJson);
+                Root root = JsonSerializer.Deserialize<Root>(destinationJson, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+                //var places = JsonSerializer.Deserialize<List<Destination>>(destinationJson, new JsonSerializerOptions
+                //{
+                //    PropertyNameCaseInsensitive = true, // It makes the deserialization case-insensitive which means it matches even if the case used in the JSON does not match the case used in the class property.
+                //});
 
                 string placesToTravel = null;
 
@@ -83,7 +92,7 @@ namespace TravelAI.App.Server.Services
                 new StringBuilder
                 ("Suggest me 10 places to visit in the world and return everything as JSON under 'destinations' array. " +
                 "Have only these entries inside it: location, country, description, climate, averageTempC, costOfLiving, " +
-                "averageMonthlyCostUSD, bestMonthsToVisit. " +
+                "averageMonthlyCostUSD, bestMonthsToVisit (array of strings). Each value must be a string. " +
                 "Don't add other fields.");
 
             if (request.IsHot == true)

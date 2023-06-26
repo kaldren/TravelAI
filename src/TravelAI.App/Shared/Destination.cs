@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace TravelAI.App.Shared
 {
+    public class Root
+    {
+        public List<Destination> Destinations { get; set; }
+    }
+
     public class Destination
     {
         //"location": "Rio de Janeiro",
@@ -23,6 +28,6 @@ namespace TravelAI.App.Shared
         public string AverageTempC { get; set; }
         public string CostOfLiving { get; set; }
         public string AverageMonthlyCostUSD { get; set; }
-        public string BestMonthsToVisit { get; set; }
+        public string[] BestMonthsToVisit { get; set; }
     }
 }
