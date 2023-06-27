@@ -31,26 +31,9 @@ namespace TravelAI.App.Server.Services
                     PropertyNameCaseInsensitive = true
                 });
 
-                //var places = JsonSerializer.Deserialize<List<Destination>>(destinationJson, new JsonSerializerOptions
-                //{
-                //    PropertyNameCaseInsensitive = true, // It makes the deserialization case-insensitive which means it matches even if the case used in the JSON does not match the case used in the class property.
-                //});
-
-                string placesToTravel = null;
-
-                var regex = new Regex("{.*}");
-                Match match = regex.Match(destinationJson);
-
-                if (match.Success)
-                {
-                    placesToTravel = match.Groups[0].Value; // curly braces content
-                }
-
-                //if (string.IsNullOrEmpty(placesToTravel))
-                //    return url;
-
                 // Q2 - Interesting things to do
-                string thingsToDo = await _aiService.SendChatMessage($"Tell me most interesting things I can do at each of these places {string.Join(", ", destinationJson.Split(".").Skip(1))}");
+                var places = string.Join(", ", root.Destinations.Select(p => $"({p.Location}, {p.Country})").Aggregate((i, j) => i + ", " + j));
+                string thingsToDo = await _aiService.SendChatMessage($"Tell me most interesting things I can do at each of these places {places}");
 
                 if (string.IsNullOrEmpty(destinationJson))
                     return url;
@@ -92,7 +75,7 @@ namespace TravelAI.App.Server.Services
                 new StringBuilder
                 ("Suggest me 10 places to visit in the world and return everything as JSON under 'destinations' array. " +
                 "Have only these entries inside it: location, country, description, climate, averageTempC, costOfLiving, " +
-                "averageMonthlyCostUSD, bestMonthsToVisit (array of strings). Each value must be a string. " +
+                "averageMonthlyCostUSD, thingsToDo (array of strings for the most interesting things to do - not just one or two, but all), famousSites (array of strings for the most interesting things to do - not just one or two, but allarray of strings for the most interesting sites to see - not just one or two, but all), bestMonthsToVisit (array of strings). Each value must be a string. " +
                 "Don't add other fields.");
 
             if (request.IsHot == true)

@@ -28,6 +28,8 @@ namespace TravelAI.App.Shared
         public string AverageTempC { get; set; }
         public string CostOfLiving { get; set; }
         public string AverageMonthlyCostUSD { get; set; }
+        public string[] ThingsToDo { get; set; }
+        public string[] FamousSites { get; set; }
         public string[] BestMonthsToVisit { get; set; }
     }
 }
