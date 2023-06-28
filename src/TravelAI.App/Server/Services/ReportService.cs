@@ -36,35 +36,37 @@ namespace TravelAI.App.Server.Services
                 });
 
                 Regex regex = new Regex(@"\{.*?\}", RegexOptions.Singleline);
+                var places = string.Join(", ", root.Destinations.Select(p => $"({p.Location}, {p.Country})").Aggregate((i, j) => i + ", " + j));
+                var resThings = await _aiService.SendChatMessage($"For each place give me TOP 10 things to do - {places}. Return everything as JSON array with 'result' as a key.");
 
-                foreach (var item in root.Destinations)
-                {
-                    var resThings = await _aiService.SendChatMessage($"Tell me the most interesting things I can do when I'm in {item.Location}, {item.Country}. Return everything as JSON array with 'result' as a key.");
+                //foreach (var item in root.Destinations)
+                //{
+                //    var resThings = await _aiService.SendChatMessage($"Tell me the most interesting things I can do when I'm in {item.Location}, {item.Country}. Return everything as JSON array with 'result' as a key.");
 
-                    Match match = regex.Match(resThings);
-                    if (match.Success)
-                    {
-                        ApiResponse res = JsonSerializer.Deserialize<ApiResponse>(resThings, new JsonSerializerOptions
-                        {
-                            PropertyNameCaseInsensitive = true
-                        });
+                //    Match match = regex.Match(resThings);
+                //    if (match.Success)
+                //    {
+                //        ApiResponse res = JsonSerializer.Deserialize<ApiResponse>(resThings, new JsonSerializerOptions
+                //        {
+                //            PropertyNameCaseInsensitive = true
+                //        });
 
-                        item.ThingsToDo = res.Result;
-                    }
+                //        item.ThingsToDo = res.Result;
+                //    }
 
-                    var resSites = await _aiService.SendChatMessage($"Tell me the most famous and interesting sites I can see when I'm in {item.Location}, {item.Country}. Return everything as JSON array with 'result' as a key.");
+                //    var resSites = await _aiService.SendChatMessage($"Tell me the most famous and interesting sites I can see when I'm in {item.Location}, {item.Country}. Return everything as JSON array with 'result' as a key.");
 
-                    match = regex.Match(resSites);
-                    if (match.Success)
-                    {
-                        ApiResponse res = JsonSerializer.Deserialize<ApiResponse>(resSites, new JsonSerializerOptions
-                        {
-                            PropertyNameCaseInsensitive = true
-                        });
+                //    match = regex.Match(resSites);
+                //    if (match.Success)
+                //    {
+                //        ApiResponse res = JsonSerializer.Deserialize<ApiResponse>(resSites, new JsonSerializerOptions
+                //        {
+                //            PropertyNameCaseInsensitive = true
+                //        });
 
-                        item.FamousSites = res.Result;
-                    }
-                }
+                //        item.FamousSites = res.Result;
+                //    }
+                //}
 
                 // Q2 - Interesting things to do
                 //var places = string.Join(", ", root.Destinations.Select(p => $"({p.Location}, {p.Country})").Aggregate((i, j) => i + ", " + j));
