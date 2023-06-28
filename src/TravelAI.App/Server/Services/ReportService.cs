@@ -1,8 +1,6 @@
 ﻿using Azure.Data.Tables;
-using Microsoft.Extensions.Options;
 using System.Text;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 using TravelAI.App.Shared;
 
 namespace TravelAI.App.Server.Services
@@ -26,14 +24,25 @@ namespace TravelAI.App.Server.Services
                 StringBuilder destinationsBuilder = GeneratePlacesToTravelQuestion(model);
                 string destinationJson = await _aiService.SendChatMessage(destinationsBuilder.ToString());
 
-                Root root = JsonSerializer.Deserialize<Root>(destinationJson, new JsonSerializerOptions
+                DestinationsRoot root = JsonSerializer.Deserialize<DestinationsRoot>(destinationJson, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
+                var places = string.Join(", ", root.Destinations.Select(p => $"({p.Location}, {p.Country})").Aggregate((i, j) => i + ", " + j));
+
+                foreach (var item in root.Destinations)
+                {
+                    var res = await _aiService.SendChatMessage($"Tell me the most interesting things I can do when I'm in {item.Location}, {item.Country}, separated by |. Don't write anything on your own.");
+                    item.ThingsToDo = res.Split("|").Select(p => p.Trim()).ToArray();
+                }
 
                 // Q2 - Interesting things to do
-                var places = string.Join(", ", root.Destinations.Select(p => $"({p.Location}, {p.Country})").Aggregate((i, j) => i + ", " + j));
-                string thingsToDo = await _aiService.SendChatMessage($"Tell me most interesting things I can do at each of these places {places}");
+                //var places = string.Join(", ", root.Destinations.Select(p => $"({p.Location}, {p.Country})").Aggregate((i, j) => i + ", " + j));
+                //string thingsToDo = await _aiService.SendChatMessage($"Tell me most interesting things I can do at each of these places {places}. Return everything as JSON where the key is a combination of location,country. " +
+                //    $"But don't return equal number of things to do (for example four) for each, but rather for each place the most interesting things to do.");
+
+                //var placesFamousSites = string.Join(", ", root.Destinations.Select(p => $"({p.Location}, {p.Country})").Aggregate((i, j) => i + ", " + j));
+                string famousSites = await _aiService.SendChatMessage($"Tell me the most famous sites of each of these places {places}. Return everything as JSON where the key is a combination of location,country.");
 
                 if (string.IsNullOrEmpty(destinationJson))
                     return url;
@@ -53,7 +62,7 @@ namespace TravelAI.App.Server.Services
                     RowKey = "68719518388",
                     PartitionKey = "gear-surf-surfboards",
                     Places = destinationJson.Split(".").Skip(1).ToArray(),
-                    ThingsToDo = thingsToDo.Split(".").Skip(1).ToArray(),
+                    //ThingsToDo = thingsToDo.Split(".").Skip(1).ToArray(),
                 };
 
                 // Add new item to server-side table
@@ -71,12 +80,12 @@ namespace TravelAI.App.Server.Services
 
         private StringBuilder GeneratePlacesToTravelQuestion(ReportRequest request)
         {
-            StringBuilder questionBuilder = 
+            StringBuilder questionBuilder =
                 new StringBuilder
                 ("Suggest me 10 places to visit in the world and return everything as JSON under 'destinations' array. " +
                 "Have only these entries inside it: location, country, description, climate, averageTempC, costOfLiving, " +
-                "averageMonthlyCostUSD, thingsToDo (array of strings for the most interesting things to do - not just one or two, but all), famousSites (array of strings for the most interesting things to do - not just one or two, but allarray of strings for the most interesting sites to see - not just one or two, but all), bestMonthsToVisit (array of strings). Each value must be a string. " +
-                "Don't add other fields.");
+                "averageMonthlyCostUSD, bestMonthsToVisit (array of strings). Each value must be a string. " +
+                "Don't add other fields. Return everything as JSON.");
 
             if (request.IsHot == true)
             {

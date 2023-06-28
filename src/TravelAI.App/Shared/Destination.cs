@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TravelAI.App.Shared
+﻿namespace TravelAI.App.Shared
 {
-    public class Root
+    public class DestinationsRoot
     {
         public List<Destination> Destinations { get; set; }
     }
@@ -28,8 +22,8 @@ namespace TravelAI.App.Shared
         public string AverageTempC { get; set; }
         public string CostOfLiving { get; set; }
         public string AverageMonthlyCostUSD { get; set; }
+        public string[] BestMonthsToVisit { get; set; }
         public string[] ThingsToDo { get; set; }
         public string[] FamousSites { get; set; }
-        public string[] BestMonthsToVisit { get; set; }
     }
 }

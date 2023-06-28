@@ -21,6 +21,7 @@ namespace TravelAI.App.Server.Services
             {
                 Messages = new List<ChatMessage>
                 {
+                    ChatMessage.FromUser("Follow exactly what I write to you. Don't write any personal responses, like 'sure', 'fine' or whatever. Do exactly what I ask you as I'm building an app and I need only the responses of what I ask for."),
                     ChatMessage.FromUser(message),
                 },
                 Model = Models.ChatGpt3_5Turbo,
