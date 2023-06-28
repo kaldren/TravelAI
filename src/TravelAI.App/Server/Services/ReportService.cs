@@ -116,7 +116,7 @@ namespace TravelAI.App.Server.Services
                 new StringBuilder
                 ("Suggest me 10 places to visit in the world and return everything as JSON under 'destinations' array. " +
                 "Have only these entries inside it: location, country, description, climate, averageTempC, costOfLiving, " +
-                "averageMonthlyCostUSD, bestMonthsToVisit (array of strings). Each value must be a string. " +
+                "averageMonthlyCostUSD, thingsToDo (array of strings, at least 10), famousSites (array of strings, at least 10), bestMonthsToVisit (array of strings). Each value must be a string. " +
                 "Don't add other fields. Return everything as JSON.");
 
             if (request.IsHot == true)
