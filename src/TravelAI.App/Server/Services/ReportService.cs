@@ -1,10 +1,16 @@
 ﻿using Azure.Data.Tables;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using TravelAI.App.Shared;
 
 namespace TravelAI.App.Server.Services
 {
+    public class ApiResponse
+    {
+        public string[] Result { get; set; }
+    }
+
     public class ReportService : IReportService
     {
         private readonly IAIService _aiService;
@@ -28,12 +34,36 @@ namespace TravelAI.App.Server.Services
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                var places = string.Join(", ", root.Destinations.Select(p => $"({p.Location}, {p.Country})").Aggregate((i, j) => i + ", " + j));
+
+                Regex regex = new Regex(@"\{.*?\}", RegexOptions.Singleline);
 
                 foreach (var item in root.Destinations)
                 {
-                    var res = await _aiService.SendChatMessage($"Tell me the most interesting things I can do when I'm in {item.Location}, {item.Country}, separated by |. Don't write anything on your own.");
-                    item.ThingsToDo = res.Split("|").Select(p => p.Trim()).ToArray();
+                    var resThings = await _aiService.SendChatMessage($"Tell me the most interesting things I can do when I'm in {item.Location}, {item.Country}. Return everything as JSON array with 'result' as a key.");
+
+                    Match match = regex.Match(resThings);
+                    if (match.Success)
+                    {
+                        ApiResponse res = JsonSerializer.Deserialize<ApiResponse>(resThings, new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        });
+
+                        item.ThingsToDo = res.Result;
+                    }
+
+                    var resSites = await _aiService.SendChatMessage($"Tell me the most famous and interesting sites I can see when I'm in {item.Location}, {item.Country}. Return everything as JSON array with 'result' as a key.");
+
+                    match = regex.Match(resSites);
+                    if (match.Success)
+                    {
+                        ApiResponse res = JsonSerializer.Deserialize<ApiResponse>(resSites, new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        });
+
+                        item.FamousSites = res.Result;
+                    }
                 }
 
                 // Q2 - Interesting things to do
@@ -41,11 +71,11 @@ namespace TravelAI.App.Server.Services
                 //string thingsToDo = await _aiService.SendChatMessage($"Tell me most interesting things I can do at each of these places {places}. Return everything as JSON where the key is a combination of location,country. " +
                 //    $"But don't return equal number of things to do (for example four) for each, but rather for each place the most interesting things to do.");
 
-                //var placesFamousSites = string.Join(", ", root.Destinations.Select(p => $"({p.Location}, {p.Country})").Aggregate((i, j) => i + ", " + j));
-                string famousSites = await _aiService.SendChatMessage($"Tell me the most famous sites of each of these places {places}. Return everything as JSON where the key is a combination of location,country.");
+                ////var placesFamousSites = string.Join(", ", root.Destinations.Select(p => $"({p.Location}, {p.Country})").Aggregate((i, j) => i + ", " + j));
+                //string famousSites = await _aiService.SendChatMessage($"Tell me the most famous sites of each of these places {places}. Return everything as JSON where the key is a combination of location,country.");
 
-                if (string.IsNullOrEmpty(destinationJson))
-                    return url;
+                //if (string.IsNullOrEmpty(destinationJson))
+                //    return url;
 
                 // Insert into database
                 TableServiceClient tableServiceClient = new TableServiceClient("DefaultEndpointsProtocol=https;AccountName=travelaicosmos;AccountKey=a67ihiAaTgPMdnxE3iNmaYMfzNttMyjGuQfg4m2ca2gTMTY2PEffVynMRrgBNMLvRw1ifzOJYfCyACDbZzIqnw==;TableEndpoint=https://travelaicosmos.table.cosmos.azure.com:443/;");
